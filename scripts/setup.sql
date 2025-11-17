@@ -23,24 +23,3 @@ CREATE OR REPLACE WAREHOUSE ML_HOL_WH; --by default, this creates an XS Standard
 CREATE OR REPLACE DATABASE ML_HOL_DB;
 CREATE OR REPLACE SCHEMA ML_HOL_SCHEMA;
 CREATE OR REPLACE STAGE ML_HOL_ASSETS DIRECTORY = (ENABLE = TRUE); --to store model assets
-
-
--- create network rule to allow all external access from Notebook
-CREATE OR REPLACE NETWORK RULE allow_all_rule
-  TYPE = 'HOST_PORT'
-  MODE= 'EGRESS'
-  VALUE_LIST = ('0.0.0.0:443','0.0.0.0:80');
-
-CREATE OR REPLACE EXTERNAL ACCESS INTEGRATION allow_all_integration
-  ALLOWED_NETWORK_RULES = (allow_all_rule)
-  ENABLED = true;
-
-GRANT USAGE ON INTEGRATION allow_all_integration TO ROLE ML_MODEL_HOL_USER;
-
--- create an API integration with Github
-CREATE OR REPLACE API INTEGRATION GITHUB_INTEGRATION_ML_HOL
-   api_provider = git_https_api
-   api_allowed_prefixes = ('https://github.com/')
-   enabled = true
-   comment='Git integration with Snowflake Demo Github Repository.';
-
